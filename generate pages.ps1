@@ -12,7 +12,7 @@ ForEach-Object {
 
 function Generate-RedirectPage ($filename, $jsonUrl, $overrideUrl = ''){
 
-    $buffer = Get-Content ./template.html.txt
+    $buffer = Get-Content ./template.html
 
     if (-not(Test-Path ./$filename)){
         mkdir ./$filename | Out-Null
@@ -98,8 +98,10 @@ if (!$env:DONT_CLEANUP){
         [Console]::Beep(2500,1000)
         Start-Sleep 5
         Remove-Item ./DDL_repos/ -Force -Confirm -Recurse
+        Remove-Item ./template.html
     } else {
         rm DDL_repos -rf
+        rm template.html
     }
     
 }

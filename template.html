@@ -2,8 +2,14 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.5">
         <title>REPLACE_WITH_FILENAME</title>
+        <style>
+            html {
+                background-color: rgb(26, 29, 30) !important;
+                color: white !important;
+            }
+        </style>
     </head>
     <body>
         <script>
@@ -16,7 +22,15 @@
                 return string.replace(/{(\d+)}/g, (match, index) => args[index] !== undefined ? args[index] : match);
             }
 
-            // Make a REST request to the JSON file
+            function exists(variable) {
+                if (typeof window[variable] !== 'undefined') {
+                    return window[variable] !== null && window[variable] !== undefined && window[variable] !== '';
+                } else {
+                    return false;
+                }
+            }
+
+
             fetch(jsonUrl)
                 .then(response => {
                     if (!response.ok) {
@@ -41,37 +55,13 @@
                         linkUrl = formatString(overrideUrl, version)
                     }
 
-
                     document.body.innerHTML = formatString("<p>Redirecting you to <a href='{0}'>{0}</a>...</p>", linkUrl);
 
-                    // // Display the link on the webpage
-                    // const linkElement = document.createElement('a');
-                    // linkElement.href = linkUrl;
-                    // linkElement.textContent = linkUrl;
-                    
-                    // // Assuming there's an element with the id 'output' where you want to display the link
-                    // const outputElement = document.getElementById('output');
-                    // outputElement.appendChild(linkElement);
-                    // // Extract the .url field from the JSON data
-                    // const url = data["architecture"]["64bit"].url;
-                    // console.log(data["architecture"]["64bit"].url);
+                    window.location.href = url;
 
-                    
-                    // if (!url) {
-                    //     throw new Error('No .url field found in JSON data');
-                    // }
-
-                    // // Redirect to the extracted URL
-                    // // window.location.href = url;
-
-                    // // Display the link on the webpage
-                    // const linkElement = document.createElement('a');
-                    // linkElement.href = url;
-                    // linkElement.textContent = 'Click here to visit the link';
-                    
-                    // // Assuming there's an element with the id 'output' where you want to display the link
-                    // const outputElement = document.getElementById('output');
-                    // outputElement.appendChild(linkElement);
+                    setTimeout(() => {
+                        window.close();
+                    }, 1000);
                 })
                 .catch(error => {
                     console.error('Error:', error.message, ' from url ', jsonUrl);
