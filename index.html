@@ -77,23 +77,23 @@
     <script>
         document.getElementById("search").focus();
 
-        function getList() {
-            fetch('./list.txt')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Network response was not ok, status code: ${response.status}`);
-                    }
-                    return response.text();
-                })
-                .then(textData => {
-                    return textData
-                })
-                .catch(error => {
-                    console.error('There was a problem with the fetch operation:', error);
-                });
+        async function fetchPlainText(url) {
+            try {
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch data from ${url}. Status: ${response.status}`);
+                }
+
+                const plaintext = await response.text();
+                return plaintext;
+            } catch (error) {
+                console.error(error);
+                return null;
+            }
         }
 
-        const textData = getList();
+        const textData = await fetchPlainText('https://couleurm.github.io/ddl/list.txt');
         const repoLink = textData.split('\n').filter(repo => repo.trim() !== '').sort();
 
 
