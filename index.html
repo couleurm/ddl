@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial';
+            text-align: center;
+            margin: 20px;
+        }
+
+        #whatisthis {
+            position: absolute;
+            text-align: right;
+            top: 0px;
+            right: 0px;
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        #searchBox {
+            margin-bottom: 20px;
+        }
+
+        #repoGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        #repoContainer {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .repoLink {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            transition: background 0.3s;
+        }
+
+        .repoLink:hover {
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>DDL</h1>
+
+    <div id="searchBox">
+
+        <input type="text" id="search" oninput="filterRepos()" placeholder="search">
+
+    </div>
+
+    <div id="whatisthis">
+        <a href="#" id="infoLink" onclick="showExplanation()">what is this<a>
+                <br>
+                <a href="https://github.com/couleurm/ddl">src<a>
+    </div>
+
+
+    <div id="repoContainer">
+        <div id="repoGrid"></div>
+    </div>
+
+
+    <script>
+        document.getElementById("search").focus();
+
+        const response = fetch('list.txt');
+        const data = response.text();
+        const repoLink = data.split('\n').filter(repo => repo.trim() !== '').sort();
+
+
+        const repoGrid = document.getElementById("repoGrid");
+
+        // Populate the repository grid
+        repoLinks.forEach(repo => {
+            const repoLink = document.createElement("a");
+            repoLink.href = `https://couleur-tweak-tips.github.io/ddl/${repo}`;
+            repoLink.className = "repoLink";
+            repoLink.textContent = repo;
+            repoGrid.appendChild(repoLink);
+        });
+
+        function showExplanation() {
+            alert(`
+                You've arrived on a website that lists links that redirect to direct download links
+
+                for the latest version of all programs
+
+                this is backed up 
+                
+            `.trim());
+        }
+
+        function filterRepos() {
+            const searchInput = document.getElementById("search").value.toLowerCase().replace(/\s/g, '-');
+            const repoLinks = document.querySelectorAll(".repoLink");
+            
+            repoLinks.forEach(link => {
+                const repoName = link.textContent.toLowerCase().replace(/\s/g, '-');
+                const isMatch = repoName.includes(searchInput);
+                link.style.display = isMatch ? "block" : "none";
+
+                if (isMatch && repoName.startsWith(searchInput)) {
+                    link.style.order = -1;
+                } else {
+                    link.style.order = 0;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
