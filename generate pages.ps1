@@ -104,7 +104,7 @@ if (!$env:DONT_CLEANUP){
         [Console]::Beep(3000,1000)
     }
     Start-Sleep 5
-    Remove-Item ./repos/ -Force -Confirm
+    Remove-Item ./repos/ -Force -Confirm -Recurse
 }
 
 (Get-ChildItem -Directory).BaseName | Set-Content ./list.txt
