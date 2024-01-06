@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -50,6 +51,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <h1>DDL</h1>
@@ -75,26 +77,24 @@
     <script>
         document.getElementById("search").focus();
 
-        let responseData;
-        
-        fetch('./list.txt')
-            .then(response => {
-            if (!response.ok) {
-                throw new Error(`Network response was not ok, status code: ${response.status}`);
-            }
-            return response.text();
-            })
-            .then(textData => {
-                console.log("textData:");
-                console.log(textData);
-                responseData = textData;
-            })
-            .catch(error => {
-            console.error('There was a problem with the fetch operation:', error);
-            });
+        function getList() {
+            fetch('./list.txt')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok, status code: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(textData => {
+                    return textData
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
 
         const response = fetch('https://couleurm.github.io/ddl/list.txt');
-        const repoLink = responseData.split('\n').filter(repo => repo.trim() !== '').sort();
+        const repoLink = (getList()).split('\n').filter(repo => repo.trim() !== '').sort();
 
 
         const repoGrid = document.getElementById("repoGrid");
@@ -122,7 +122,7 @@
         function filterRepos() {
             const searchInput = document.getElementById("search").value.toLowerCase().replace(/\s/g, '-');
             const repoLinks = document.querySelectorAll(".repoLink");
-            
+
             repoLinks.forEach(link => {
                 const repoName = link.textContent.toLowerCase().replace(/\s/g, '-');
                 const isMatch = repoName.includes(searchInput);
@@ -137,4 +137,5 @@
         }
     </script>
 </body>
+
 </html>
