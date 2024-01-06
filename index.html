@@ -76,6 +76,7 @@
         document.getElementById("search").focus();
 
         const response = fetch('list.txt');
+        console.log(response);
         const data = response.text();
         const repoLink = data.split('\n').filter(repo => repo.trim() !== '').sort();
 
