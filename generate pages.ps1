@@ -5,7 +5,7 @@ $ErrorActionPreference = 'Stop'
 'ddl'  | # contains all the html files this script generates
 ForEach-Object {
     if (-not(Test-Path ./$_)){
-        mkdir ./$_ -ErrorAction Stop
+        mkdir ./$_
     }
 }
 
