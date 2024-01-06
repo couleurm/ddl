@@ -1,7 +1,8 @@
 #$env:DONT_CLEANUP=1
+Set-Content $PSScriptRoot
 $ErrorActionPreference = 'Stop'
 
-'repos', # where the repos are gonna be downloaded and unzipped
+'DDL_repos', # where the repos are gonna be downloaded and unzipped
 'ddl'  | # contains all the html files this script generates
 ForEach-Object {
     if (-not(Test-Path ./$_)){
@@ -69,27 +70,20 @@ $repoUrls = @(
     $curl = (Get-Command curl -CommandType Application -ErrorAction Stop).Source | Select-Object -First 1
 
 
-    if (-not(Test-Path "./repos/$name.zip")){
+    if (-not(Test-Path "./DDL_repos/$name.zip")){
 
-        & $curl "https://codeload.github.com/$owner/$name/zip/refs/heads/$branch" -o "./repos/$name.zip"
+        & $curl "https://codeload.github.com/$owner/$name/zip/refs/heads/$branch" -o "./DDL_repos/$name.zip"
 
-        Expand-Archive "./repos/$name.zip" -DestinationPath "./repos/$name"
+        Expand-Archive "./DDL_repos/$name.zip" -DestinationPath "./DDL_repos/$name"
     }
 
     Write-Warning "Generating redirects for $owner/$name"
 
-    $manifestPaths = Resolve-Path ./repos/$name/*/bucket/*.json
+    $manifestPaths = Resolve-Path ./DDL_repos/$name/*/bucket/*.json
 
     Get-Item $manifestPaths | ForEach-Object {
         $filename = $_.BaseName
         $jsonUrl = "https://raw.githubusercontent.com/$owner/$name/$branch/bucket/$filename.json"
-
-        $buffer = Get-Content ./template.html.txt
-
-        $buffer -replace 'REPLACE_WITH_FILENAME',    $filename `
-                -replace 'REPLACE_WITH_URL',         $jsonUrl  `
-                -replace 'REPLACE_WITH_OVERRIDEURL', ''        `
-        | Set-Content ./ddl/$filename.html
 
         Generate-RedirectPage -filename $filename -jsonUrl $jsonUrl
 
@@ -100,11 +94,14 @@ if (!$env:DONT_CLEANUP){
     Write-Warning "Removing temporary repositories"
     if (!$isLinux){
         [Console]::Beep(3000,1000)
-        [Console]::Beep(3000,1000)
-        [Console]::Beep(3000,1000)
+        [Console]::Beep(500,1000)
+        [Console]::Beep(2500,1000)
+        Start-Sleep 5
+        Remove-Item ./DDL_repos/ -Force -Confirm -Recurse
+    } else {
+        rm DDL_repos -rf
     }
-    Start-Sleep 5
-    Remove-Item ./repos/ -Force -Confirm -Recurse
+    
 }
 
 (Get-ChildItem -Directory).BaseName | Set-Content ./list.txt
