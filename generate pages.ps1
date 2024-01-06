@@ -1,5 +1,5 @@
 #$env:DONT_CLEANUP=1
-Set-Content $PSScriptRoot
+Set-Location $PSScriptRoot
 $ErrorActionPreference = 'Stop'
 
 'DDL_repos', # where the repos are gonna be downloaded and unzipped
