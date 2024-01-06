@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>REPLACE_WITH_FILENAME</title>
+    </head>
+    <body>
+        <script>
+
+            const filename = 'REPLACE_WITH_FILENAME';
+            const jsonUrl = 'REPLACE_WITH_URL';
+            const overrideUrl = "REPLACE_WITH_OVERRIDEURL";
+
+            function formatString(string, ...args) {
+                return string.replace(/{(\d+)}/g, (match, index) => args[index] !== undefined ? args[index] : match);
+            }
+
+            // Make a REST request to the JSON file
+            fetch(jsonUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch JSON data');
+                    }
+                    return response.json();
+                })
+                .then(data => {                
+                    // // Assuming the data structure contains a property 'link'
+                    var linkUrl = data["architecture"]["64bit"].url;
+                    if (!linkUrl){
+                        // some packages don't specify architecture
+                        var linkUrl = data.url;
+                    }
+
+                    if (!linkUrl){
+                        throw new Error("Failed to get url field from " + jsonUrl + ", Get it yourself");
+                    }
+
+                    if (typeof overrideUrl !== 'undefined' && overrideUrl !== null && overrideUrl !== '') {
+                        const version = data.version;
+                        linkUrl = formatString(overrideUrl, version)
+                    }
+
+
+                    document.body.innerHTML = formatString("<p>Redirecting you to <a href='{0}'>{0}</a>...</p>", linkUrl);
+
+                    // // Display the link on the webpage
+                    // const linkElement = document.createElement('a');
+                    // linkElement.href = linkUrl;
+                    // linkElement.textContent = linkUrl;
+                    
+                    // // Assuming there's an element with the id 'output' where you want to display the link
+                    // const outputElement = document.getElementById('output');
+                    // outputElement.appendChild(linkElement);
+                    // // Extract the .url field from the JSON data
+                    // const url = data["architecture"]["64bit"].url;
+                    // console.log(data["architecture"]["64bit"].url);
+
+                    
+                    // if (!url) {
+                    //     throw new Error('No .url field found in JSON data');
+                    // }
+
+                    // // Redirect to the extracted URL
+                    // // window.location.href = url;
+
+                    // // Display the link on the webpage
+                    // const linkElement = document.createElement('a');
+                    // linkElement.href = url;
+                    // linkElement.textContent = 'Click here to visit the link';
+                    
+                    // // Assuming there's an element with the id 'output' where you want to display the link
+                    // const outputElement = document.getElementById('output');
+                    // outputElement.appendChild(linkElement);
+                })
+                .catch(error => {
+                    console.error('Error:', error.message, ' from url ', jsonUrl);
+                    document.body.innerHTML = (`<p>Error: ${error.message}</p>` + ' from url ' + jsonUrl);
+                });
+        </script>
+    </body>
+</html>
+
