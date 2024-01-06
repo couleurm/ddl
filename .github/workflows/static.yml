@@ -34,7 +34,7 @@ jobs:
         
       - name: Run the build script
         shell: pwsh
-        run: "& '.\generate pages.ps1'"
+        run: "& './generate pages.ps1'"
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
