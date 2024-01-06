@@ -76,6 +76,8 @@ $repoUrls = @(
         Expand-Archive "./repos/$name.zip" -DestinationPath "./repos/$name"
     }
 
+    Write-Warning "Generating redirects for $owner/$name"
+
     $manifestPaths = Resolve-Path ./repos/$name/*/bucket/*.json
 
     Get-Item $manifestPaths | ForEach-Object {
@@ -96,9 +98,11 @@ $repoUrls = @(
 
 if (!$env:DONT_CLEANUP){
     Write-Warning "Removing temporary repositories"
-    [Console]::Beep(3000,1000)
-    [Console]::Beep(3000,1000)
-    [Console]::Beep(3000,1000)
+    if (!$isLinux){
+        [Console]::Beep(3000,1000)
+        [Console]::Beep(3000,1000)
+        [Console]::Beep(3000,1000)
+    }
     Start-Sleep 5
     Remove-Item ./repos/ -Force -Confirm
 }
