@@ -77,35 +77,35 @@
     <script>
         document.getElementById("search").focus();
 
-        let textData;
+        const repoGrid = document.getElementById("repoGrid");
+
+        let repoLinks;
 
         fetch('https://couleurm.github.io/ddl/list.txt')
             .then(response => {
+
                 if (!response.ok) {
-                    throw new Error(`Failed to fetch data. Status: ${response.status}`);
+                    throw new Error(`Network response was not ok, status code: ${response.status}`);
                 }
                 return response.text();
             })
-            .then(data => {
-                textData = data;
+            .then(result => {
+
+                repoLinks = result.split('\n').filter(repo => repo.trim() !== '').sort();
+
+                repoLinks.forEach(repo => {
+                    const repoLink = document.createElement("a");
+                    repoLink.href = `https://couleur-tweak-tips.github.io/ddl/${repo}`;
+                    repoLink.className = "repoLink";
+                    repoLink.textContent = repo;
+                    repoGrid.appendChild(repoLink);
+                });
+
+
             })
             .catch(error => {
-                console.error(error);
+                console.error('Error fetching plaintext:', error);
             });
-
-        const repoLink = textData.split('\n').filter(repo => repo.trim() !== '').sort();
-
-
-        const repoGrid = document.getElementById("repoGrid");
-
-        // Populate the repository grid
-        repoLinks.forEach(repo => {
-            const repoLink = document.createElement("a");
-            repoLink.href = `https://couleur-tweak-tips.github.io/ddl/${repo}`;
-            repoLink.className = "repoLink";
-            repoLink.textContent = repo;
-            repoGrid.appendChild(repoLink);
-        });
 
         function showExplanation() {
             alert(`
