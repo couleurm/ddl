@@ -85,6 +85,8 @@
             return response.text();
             })
             .then(textData => {
+                console.log("textData:");
+                console.log(textData);
                 responseData = textData;
             })
             .catch(error => {
