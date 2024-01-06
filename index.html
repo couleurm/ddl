@@ -75,10 +75,24 @@
     <script>
         document.getElementById("search").focus();
 
-        const response = fetch('list.txt');
-        console.log(response);
-        const data = response.text();
-        const repoLink = data.split('\n').filter(repo => repo.trim() !== '').sort();
+        let responseData;
+        
+        fetch('./list.txt')
+            .then(response => {
+            if (!response.ok) {
+                throw new Error(`Network response was not ok, status code: ${response.status}`);
+            }
+            return response.text();
+            })
+            .then(textData => {
+                responseData = textData;
+            })
+            .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+            });
+
+        const response = fetch('https://couleurm.github.io/ddl/list.txt');
+        const repoLink = responseData.split('\n').filter(repo => repo.trim() !== '').sort();
 
 
         const repoGrid = document.getElementById("repoGrid");
