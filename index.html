@@ -95,9 +95,10 @@
 
                 repoLinks.forEach(repo => {
                     const repoLink = document.createElement("a");
-                    repoLink.href = `https://couleur-tweak-tips.github.io/ddl/${repo}`;
+                    repoLink.href = `./${repo}`;
                     repoLink.className = "repoLink";
                     repoLink.textContent = repo;
+                    repoLink.target="_blank";
                     repoGrid.appendChild(repoLink);
                 });
 
