@@ -93,8 +93,8 @@
                 });
         }
 
-        const response = fetch('https://couleurm.github.io/ddl/list.txt');
-        const repoLink = (getList()).split('\n').filter(repo => repo.trim() !== '').sort();
+        const textData = getList();
+        const repoLink = textData.split('\n').filter(repo => repo.trim() !== '').sort();
 
 
         const repoGrid = document.getElementById("repoGrid");
