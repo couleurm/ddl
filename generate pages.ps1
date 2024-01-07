@@ -97,4 +97,8 @@ if (!$env:DONT_CLEANUP) {
     
 }
 
-(Get-ChildItem -Directory).BaseName | Set-Content ./list.txt
+$Redirects = (Get-ChildItem -Directory)
+
+$Redirects.BaseName | Set-Content ./list.txt
+
+Write-Warning "$($Redirects.Length)"
