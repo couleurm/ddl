@@ -5,24 +5,24 @@ $ErrorActionPreference = 'Stop'
 'DDL_repos', # where the repos are gonna be downloaded and unzipped
 'ddl'  | # contains all the html files this script generates
 ForEach-Object {
-    if (-not(Test-Path ./$_)){
+    if (-not(Test-Path ./$_)) {
         mkdir ./$_
     }
 }
 
-function Generate-RedirectPage ($filename, $jsonUrl, $overrideUrl = ''){
+function Generate-RedirectPage ($filename, $jsonUrl, $overrideUrl = '') {
 
     $buffer = Get-Content ./template.html
 
-    if (-not(Test-Path ./$filename)){
+    if (-not(Test-Path ./$filename)) {
         mkdir ./$filename | Out-Null
     }
 
 
 
-    $buffer -replace 'REPLACE_WITH_FILENAME',    $filename    `
-            -replace 'REPLACE_WITH_URL',         $jsonUrl     `
-            -replace 'REPLACE_WITH_OVERRIDEURL', $overrideUrl `
+    $buffer -replace 'REPLACE_WITH_FILENAME', $filename    `
+        -replace 'REPLACE_WITH_URL', $jsonUrl     `
+        -replace 'REPLACE_WITH_OVERRIDEURL', $overrideUrl `
     | Set-Content ./$filename/index.html
 }
 
@@ -34,8 +34,8 @@ $filemaps = @(
     },
     @{
         filename    = "telegram-installer"
-        jsonUrl    = "https://raw.githubusercontent.com/ScoopInstaller/Extras/master/bucket/telegram.json"
-        overrideUrl= "https://github.com/telegramdesktop/tdesktop/releases/download/v{0}/tsetup-x64.{0}.exe"
+        jsonUrl     = "https://raw.githubusercontent.com/ScoopInstaller/Extras/master/bucket/telegram.json"
+        overrideUrl = "https://github.com/telegramdesktop/tdesktop/releases/download/v{0}/tsetup-x64.{0}.exe"
     }
     @{
         filename    = "discord-installer"
@@ -44,7 +44,7 @@ $filemaps = @(
     }
 )
 
-foreach($program in $filemaps){
+foreach ($program in $filemaps) {
 
     Generate-RedirectPage @program
 
@@ -52,25 +52,25 @@ foreach($program in $filemaps){
 
 # all manifests from these are automatically generated
 @(
-    @{owner="couleur-tweak-tips";   name="utils";               branch="main";   folder='bucket'}
-    @{owner="ScoopInstaller";       name="Extras";              branch="master"; folder='bucket'}
-    @{owner="ScoopInstaller";       name="Main";                branch="master"; folder='bucket'}
-    @{owner="ScoopInstaller";       name="Versions";            branch="master"; folder='bucket'}
-    @{owner="kodybrown";            name="scoop-nirsoft";       branch="master"; folder='bucket'}
-    @{owner="niheaven";             name="scoop-sysinternals";  branch="main";   folder='bucket'}
-    @{owner="ScoopInstaller";       name="PHP";                 branch="master"; folder='bucket'}
-    @{owner="matthewjberger";       name="scoop-nerd-fonts";    branch="master"; folder='bucket'}
-    @{owner="ScoopInstaller";       name="Nonportable";         branch="master"; folder='bucket'}
-    @{owner="ScoopInstaller";       name="Java";                branch="master"; folder='bucket'}
-    @{owner="Calinou";              name="scoop-games";         branch="master"; folder='bucket'}
+    @{owner = "couleur-tweak-tips"; name = "utils"; branch = "main"; folder = 'bucket' }
+    @{owner = "ScoopInstaller"; name = "Extras"; branch = "master"; folder = 'bucket' }
+    @{owner = "ScoopInstaller"; name = "Main"; branch = "master"; folder = 'bucket' }
+    @{owner = "ScoopInstaller"; name = "Versions"; branch = "master"; folder = 'bucket' }
+    @{owner = "kodybrown"; name = "scoop-nirsoft"; branch = "master"; folder = 'bucket' }
+    @{owner = "niheaven"; name = "scoop-sysinternals"; branch = "main"; folder = 'bucket' }
+    @{owner = "ScoopInstaller"; name = "PHP"; branch = "master"; folder = 'bucket' }
+    @{owner = "matthewjberger"; name = "scoop-nerd-fonts"; branch = "master"; folder = 'bucket' }
+    @{owner = "ScoopInstaller"; name = "Nonportable"; branch = "master"; folder = 'bucket' }
+    @{owner = "ScoopInstaller"; name = "Java"; branch = "master"; folder = 'bucket' }
+    @{owner = "Calinou"; name = "scoop-games"; branch = "master"; folder = 'bucket' }
 ) | ForEach-Object {
     $owner, $name, $branch, $folder = $_.owner, $_.name, $_.branch, $_.folder
 
     $Response = Invoke-RestMethod "https://api.github.com/repos/$owner/$name/git/trees/$branch`?recursive=1"
-    $Manifests = $Response.tree.path | Where-Object {$_ -Like "$folder/*.json"}
-    $Manifests = ($Manifests).Replace('bucket/','').Replace('.json','')
+    $Manifests = $Response.tree.path | Where-Object { $_ -Like "$folder/*.json" }
+    $Manifests = ($Manifests).Replace('bucket/', '').Replace('.json', '')
 
-    foreach($filename in $Manifests){
+    foreach ($filename in $Manifests) {
 
         $jsonUrl = "https://raw.githubusercontent.com/$owner/$name/$branch/bucket/$filename.json"
 
@@ -80,16 +80,17 @@ foreach($program in $filemaps){
     }
 }
 
-if (!$env:DONT_CLEANUP){
+if (!$env:DONT_CLEANUP) {
     Write-Warning "Removing temporary repositories"
-    if (!$isLinux){
-        [Console]::Beep(3000,1000)
-        [Console]::Beep(500,1000)
-        [Console]::Beep(2500,1000)
+    if (!$isLinux) {
+        [Console]::Beep(3000, 1000)
+        [Console]::Beep(500, 1000)
+        [Console]::Beep(2500, 1000)
         Start-Sleep 5
         Remove-Item ./DDL_repos/ -Force -Confirm -Recurse
         Remove-Item ./template.html
-    } else {
+    }
+    else {
         rm DDL_repos -rf
         rm template.html
     }
