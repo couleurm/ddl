@@ -36,6 +36,13 @@ jobs:
         shell: pwsh
         run: "& './generate pages.ps1'"
 
+      - name: Minify everything
+        shell: pwsh
+        run: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force -ErrorAction Ignore
+          npm install -g uglify-es clean-css-cli html-minifier
+          html-minifier --input-dir (Get-Location).Path --output-dir (Get-Location).Path --minify-css --minify-js
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
