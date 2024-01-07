@@ -49,9 +49,17 @@
 
                     if (!linkUrl){
                         throw new Error("Failed to get url field from " + jsonUrl + ", Get it yourself");
-                    }
+                    } else if(typeof(linkUrl) == "object") {
 
-                    if (exists('overrideUrl')) {
+                        htmlContent = 'This program needs multiple files, please middle-click each of these links:<br><br>';
+
+                        for (let i = 0; i < linkUrl.length; i++) {
+                            htmlContent += `<a href="${linkUrl[i]}" target="_blank">${linkUrl[i]}</a><br>`;
+                        }
+
+                        document.body.innerHTML = htmlContent;
+                    } else {
+                        if (exists('overrideUrl')) {
                         const version = data.version;
                         linkUrl = formatString(overrideUrl, version)
                     }
@@ -64,6 +72,7 @@
                         history.back();
                         window.close();
                     }, 1000);
+                    }
                 })
                 .catch(error => {
                     console.error('Error:', error.message, ' from target url ', jsonUrl);
