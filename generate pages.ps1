@@ -70,11 +70,11 @@ foreach ($program in $filemaps) {
     $Manifests = $Response.tree.path | Where-Object { $_ -Like "$folder/*.json" }
     $Manifests = ($Manifests).Replace('bucket/', '').Replace('.json', '')
 
+    Write-Warning "Generating redirects for $owner/$name"
+    
     foreach ($filename in $Manifests) {
 
         $jsonUrl = "https://raw.githubusercontent.com/$owner/$name/$branch/bucket/$filename.json"
-
-        Write-Warning "Generating redirects for $owner/$name"
 
         Generate-RedirectPage -filename $filename -jsonUrl $jsonUrl
     }
