@@ -16,6 +16,4 @@ here's how it's generated:
     
     6: if it was opened in a new tab, `window.close()`
 
-If you're familiar with scoop package names you can just do http://couleurm.github.io/ddl/curl and magic! 
-
 If you're familiar with scoop package names you can just do http://couleurm.github.io/ddl/curl and magic! (though it's intended to be used in hyperlinks with `ref="_blank"`)
