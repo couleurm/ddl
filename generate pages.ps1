@@ -51,42 +51,32 @@ foreach($program in $filemaps){
 }
 
 # all manifests from these are automatically generated
-$repoUrls = @(
-    @{owner="couleur-tweak-tips";   name="utils";               branch="main"}
-    @{owner="ScoopInstaller";       name="Extras";              branch="master"}
-    @{owner="ScoopInstaller";       name="Main";                branch="master"}
-    @{owner="ScoopInstaller";       name="Versions";            branch="master"}
-    @{owner="kodybrown";            name="scoop-nirsoft";       branch="master"}
-    @{owner="niheaven";             name="scoop-sysinternals";  branch="main"}
-    @{owner="ScoopInstaller";       name="PHP";                 branch="master"}
-    @{owner="matthewjberger";       name="scoop-nerd-fonts";    branch="master"}
-    @{owner="ScoopInstaller";       name="Nonportable";         branch="master"}
-    @{owner="ScoopInstaller";       name="Java";                branch="master"}
-    @{owner="Calinou";              name="scoop-games";         branch="master"}
+@(
+    @{owner="couleur-tweak-tips";   name="utils";               branch="main";   folder='bucket'}
+    @{owner="ScoopInstaller";       name="Extras";              branch="master"; folder='bucket'}
+    @{owner="ScoopInstaller";       name="Main";                branch="master"; folder='bucket'}
+    @{owner="ScoopInstaller";       name="Versions";            branch="master"; folder='bucket'}
+    @{owner="kodybrown";            name="scoop-nirsoft";       branch="master"; folder='bucket'}
+    @{owner="niheaven";             name="scoop-sysinternals";  branch="main";   folder='bucket'}
+    @{owner="ScoopInstaller";       name="PHP";                 branch="master"; folder='bucket'}
+    @{owner="matthewjberger";       name="scoop-nerd-fonts";    branch="master"; folder='bucket'}
+    @{owner="ScoopInstaller";       name="Nonportable";         branch="master"; folder='bucket'}
+    @{owner="ScoopInstaller";       name="Java";                branch="master"; folder='bucket'}
+    @{owner="Calinou";              name="scoop-games";         branch="master"; folder='bucket'}
 ) | ForEach-Object {
-    $owner, $name, $branch = $_.owner, $_.name, $_.branch
+    $owner, $name, $branch, $folder = $_.owner, $_.name, $_.branch, $_.folder
 
-    # by default curl is an alias to Invoke-WebRequest.. =(
-    $curl = (Get-Command curl -CommandType Application -ErrorAction Stop).Source | Select-Object -First 1
+    $Response = Invoke-RestMethod "https://api.github.com/repos/$owner/$name/git/trees/$branch`?recursive=1"
+    $Manifests = $Response.tree.path | Where-Object {$_ -Like "$folder/*.json"}
+    $Manifests = ($Manifests).Replace('bucket/','').Replace('.json','')
 
+    foreach($filename in $Manifests){
 
-    if (-not(Test-Path "./DDL_repos/$name.zip")){
-
-        & $curl "https://codeload.github.com/$owner/$name/zip/refs/heads/$branch" -o "./DDL_repos/$name.zip"
-
-        Expand-Archive "./DDL_repos/$name.zip" -DestinationPath "./DDL_repos/$name"
-    }
-
-    Write-Warning "Generating redirects for $owner/$name"
-
-    $manifestPaths = Resolve-Path ./DDL_repos/$name/*/bucket/*.json
-
-    Get-Item $manifestPaths | ForEach-Object {
-        $filename = $_.BaseName
         $jsonUrl = "https://raw.githubusercontent.com/$owner/$name/$branch/bucket/$filename.json"
 
-        Generate-RedirectPage -filename $filename -jsonUrl $jsonUrl
+        Write-Warning "Generating redirects for $owner/$name"
 
+        Generate-RedirectPage -filename $filename -jsonUrl $jsonUrl
     }
 }
 
