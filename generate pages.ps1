@@ -52,17 +52,17 @@ foreach ($program in $filemaps) {
 
 # all manifests from these are automatically generated
 @(
-    @{owner = "couleur-tweak-tips"; name = "utils"; branch = "main"; folder = 'bucket' }
-    @{owner = "ScoopInstaller"; name = "Extras"; branch = "master"; folder = 'bucket' }
-    @{owner = "ScoopInstaller"; name = "Main"; branch = "master"; folder = 'bucket' }
-    @{owner = "ScoopInstaller"; name = "Versions"; branch = "master"; folder = 'bucket' }
-    @{owner = "kodybrown"; name = "scoop-nirsoft"; branch = "master"; folder = 'bucket' }
-    @{owner = "niheaven"; name = "scoop-sysinternals"; branch = "main"; folder = 'bucket' }
-    @{owner = "ScoopInstaller"; name = "PHP"; branch = "master"; folder = 'bucket' }
-    @{owner = "matthewjberger"; name = "scoop-nerd-fonts"; branch = "master"; folder = 'bucket' }
-    @{owner = "ScoopInstaller"; name = "Nonportable"; branch = "master"; folder = 'bucket' }
-    @{owner = "ScoopInstaller"; name = "Java"; branch = "master"; folder = 'bucket' }
-    @{owner = "Calinou"; name = "scoop-games"; branch = "master"; folder = 'bucket' }
+    @{owner = "couleur-tweak-tips"; name = "utils";              branch = "main";   folder = 'bucket' }
+    @{owner = "ScoopInstaller";     name = "Extras";             branch = "master"; folder = 'bucket' }
+    @{owner = "ScoopInstaller";     name = "Main";               branch = "master"; folder = 'bucket' }
+    @{owner = "ScoopInstaller";     name = "Versions";           branch = "master"; folder = 'bucket' }
+    @{owner = "kodybrown";          name = "scoop-nirsoft";      branch = "master"; folder = 'bucket' }
+    @{owner = "niheaven";           name = "scoop-sysinternals"; branch = "main";   folder = 'bucket' }
+    @{owner = "ScoopInstaller";     name = "PHP";                branch = "master"; folder = 'bucket' }
+    @{owner = "matthewjberger";     name = "scoop-nerd-fonts";   branch = "master"; folder = 'bucket' }
+    @{owner = "ScoopInstaller";     name = "Nonportable";        branch = "master"; folder = 'bucket' }
+    @{owner = "ScoopInstaller";     name = "Java";               branch = "master"; folder = 'bucket' }
+    @{owner = "Calinou";            name = "scoop-games";        branch = "master"; folder = 'bucket' }
 ) | ForEach-Object {
     $owner, $name, $branch, $folder = $_.owner, $_.name, $_.branch, $_.folder
 
@@ -71,7 +71,7 @@ foreach ($program in $filemaps) {
     $Manifests = ($Manifests).Replace('bucket/', '').Replace('.json', '')
 
     Write-Warning "Generating redirects for $owner/$name"
-    
+
     foreach ($filename in $Manifests) {
 
         $jsonUrl = "https://raw.githubusercontent.com/$owner/$name/$branch/bucket/$filename.json"
