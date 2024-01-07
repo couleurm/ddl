@@ -39,7 +39,10 @@ jobs:
       - name: Minify everything
         shell: pwsh
         run: |
-          if (!$IsLinux){Set-ExecutionPolicy Bypass -Scope Process -Force -ErrorAction Ignore}
+          if (!$IsLinux){
+            Set-ExecutionPolicy Bypass -Scope Process -Force -ErrorAction Ignore
+            rm -rf .git
+          } else { Remove-Item ./.git -Force -Confirm -Recurse}
           npm install -g uglify-es clean-css-cli html-minifier
           html-minifier --input-dir (Get-Location).Path --output-dir (Get-Location).Path --minify-css --minify-js
 
