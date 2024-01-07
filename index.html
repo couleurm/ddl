@@ -63,9 +63,7 @@
     </div>
 
     <div id="whatisthis">
-        <a href="#" id="infoLink" onclick="showExplanation()">what is this<a>
-                <br>
-                <a href="https://github.com/couleurm/ddl">src<a>
+        <a href="https://github.com/couleurm/ddl">what is this<a>
     </div>
 
 
@@ -98,7 +96,7 @@
                     repoLink.href = `./${repo}`;
                     repoLink.className = "repoLink";
                     repoLink.textContent = repo;
-                    repoLink.target="_blank";
+                    repoLink.target = "_blank";
                     repoGrid.appendChild(repoLink);
                 });
 
@@ -107,17 +105,6 @@
             .catch(error => {
                 console.error('Error fetching plaintext:', error);
             });
-
-        function showExplanation() {
-            alert(`
-                You've arrived on a website that lists links that redirect to direct download links
-
-                for the latest version of all programs
-
-                this is backed up 
-                
-            `.trim());
-        }
 
         function filterRepos() {
             const searchInput = document.getElementById("search").value.toLowerCase().replace(/\s/g, '-');
@@ -135,6 +122,11 @@
                 }
             });
         }
+
+        const searchInput = new URLSearchParams(window.location.search).get("query") || "";
+        console.log(searchInput);
+        document.getElementById("search").value = searchInput;
+        filterRepos();
     </script>
 </body>
 
